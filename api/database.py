@@ -1,10 +1,20 @@
 import sqlite3
 from datetime import datetime, timedelta
 import os
+import tempfile
 
 class Database:
     def __init__(self, db_path=None):
-        self.db_path = db_path or os.getenv('DATABASE_PATH', 'tecxto_ia.db')
+        # No Vercel, usar diretório temporário
+        if db_path is None:
+            if os.getenv('VERCEL'):
+                # Em produção no Vercel, usar /tmp
+                self.db_path = '/tmp/tecxto_ia.db'
+            else:
+                # Em desenvolvimento local
+                self.db_path = os.getenv('DATABASE_PATH', 'tecxto_ia.db')
+        else:
+            self.db_path = db_path
         self.init_database()
     
     def init_database(self):
