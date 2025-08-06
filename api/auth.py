@@ -66,10 +66,26 @@ class AuthManager:
             # Verificar se tem assinatura ativa
             has_subscription, end_date, usage_count = db.check_user_subscription(user_id)
             
+            # Administradores têm acesso ilimitado
+            if is_admin:
+                has_subscription = True
+                if not end_date:
+                    from datetime import datetime, timedelta as td
+                    end_date = datetime.now() + td(days=3650)  # 10 anos
+            
             access_token = create_access_token(
                 identity=user_id,
                 expires_delta=timedelta(days=30)
             )
+            
+            # Converter end_date para formato ISO se for datetime object
+            end_date_iso = None
+            if end_date:
+                if hasattr(end_date, 'isoformat'):
+                    end_date_iso = end_date.isoformat()
+                else:
+                    # Se for string do banco, manter como está
+                    end_date_iso = str(end_date)
             
             return True, {
                 'access_token': access_token,
@@ -77,7 +93,7 @@ class AuthManager:
                 'username': username,
                 'is_admin': is_admin,
                 'has_subscription': has_subscription,
-                'subscription_end': end_date.isoformat() if end_date else None,
+                'subscription_end': end_date_iso,
                 'usage_count': usage_count
             }, "Login realizado com sucesso"
         
@@ -91,6 +107,15 @@ def require_subscription(f):
         current_user_id = get_jwt_identity()
         
         db = Database()
+        
+        # Verificar se é administrador (tem acesso ilimitado)
+        if db.is_admin(current_user_id):
+            # Log do uso para admin
+            action = f.__name__
+            db.log_usage(current_user_id, f"admin_{action}")
+            return f(*args, **kwargs)
+        
+        # Para usuários normais, verificar assinatura
         has_subscription, end_date, usage_count = db.check_user_subscription(current_user_id)
         
         if not has_subscription:
