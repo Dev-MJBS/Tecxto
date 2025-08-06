@@ -104,9 +104,11 @@ class Database:
             # Apenas garantir que é admin
             cursor.execute('UPDATE users SET is_admin = 1 WHERE email = ?', ('mateus.job@outlook.com',))
             conn.commit()
+            print("Usuário administrador já existe e foi atualizado")
         else:
             # Buscar senha do admin das variáveis de ambiente
             admin_password = os.getenv('ADMIN_PASSWORD', 'admin123')  # Senha padrão temporária
+            print(f"Criando admin com senha de ambiente: {admin_password}")  # Debug
             password_hash = bcrypt.generate_password_hash(admin_password).decode('utf-8')
             cursor.execute('''
             INSERT INTO users (username, email, password_hash, is_admin, is_active)
