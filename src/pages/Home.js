@@ -7,6 +7,7 @@ function Home() {
   const [theme, setTheme] = useState('');
   const [activeTab, setActiveTab] = useState('inicio');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [authMenuOpen, setAuthMenuOpen] = useState(false); // Novo estado para menu de autenticação
   const [isDarkMode, setIsDarkMode] = useState(true); // Tema escuro por padrão
   const { isAuthenticated, user, logout } = useContext(AuthContext);
 
@@ -437,6 +438,163 @@ function Home() {
           color: white;
         }
         
+        /* Menu Hamburger de Autenticação */
+        .auth-menu-toggle {
+          position: fixed;
+          top: 20px;
+          left: 20px;
+          width: 50px;
+          height: 50px;
+          background: var(--bg-sidebar);
+          border: 1px solid var(--border-color);
+          border-radius: 12px;
+          cursor: pointer;
+          z-index: 1004;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 10px var(--shadow-color);
+        }
+        
+        .auth-menu-toggle:hover {
+          background: var(--color-primary);
+          border-color: var(--color-primary);
+        }
+        
+        .hamburger-lines {
+          width: 20px;
+          height: 15px;
+          position: relative;
+        }
+        
+        .hamburger-lines div {
+          width: 100%;
+          height: 2px;
+          background: var(--text-primary);
+          position: absolute;
+          transition: all 0.3s ease;
+        }
+        
+        .hamburger-lines div:nth-child(1) { top: 0; }
+        .hamburger-lines div:nth-child(2) { top: 6px; }
+        .hamburger-lines div:nth-child(3) { top: 12px; }
+        
+        .auth-menu-toggle:hover .hamburger-lines div {
+          background: white;
+        }
+        
+        .auth-menu-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 1005;
+        }
+        
+        .auth-menu {
+          position: fixed;
+          top: 20px;
+          left: 80px;
+          width: 280px;
+          background: var(--bg-sidebar);
+          border: 1px solid var(--border-color);
+          border-radius: 12px;
+          box-shadow: 0 5px 20px var(--shadow-color);
+          z-index: 1006;
+          animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        
+        .auth-menu-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20px;
+          border-bottom: 1px solid var(--border-color);
+        }
+        
+        .auth-menu-header h3 {
+          margin: 0;
+          color: var(--text-primary);
+          font-size: 1.1em;
+        }
+        
+        .auth-menu-close {
+          background: none;
+          border: none;
+          color: var(--text-secondary);
+          font-size: 1.2em;
+          cursor: pointer;
+          padding: 5px;
+          border-radius: 4px;
+          transition: all 0.2s ease;
+        }
+        
+        .auth-menu-close:hover {
+          background: var(--bg-input);
+          color: var(--text-primary);
+        }
+        
+        .auth-menu-content {
+          padding: 20px;
+        }
+        
+        .auth-menu-content p {
+          margin: 0 0 20px 0;
+          color: var(--text-secondary);
+          font-size: 0.9em;
+        }
+        
+        .auth-menu-btn {
+          display: block;
+          width: 100%;
+          padding: 12px 20px;
+          margin-bottom: 12px;
+          text-decoration: none;
+          text-align: center;
+          border-radius: 8px;
+          font-weight: bold;
+          transition: all 0.3s ease;
+          box-sizing: border-box;
+        }
+        
+        .auth-menu-btn.primary {
+          background: var(--color-primary);
+          color: white;
+          border: 2px solid var(--color-primary);
+        }
+        
+        .auth-menu-btn.primary:hover {
+          background: var(--color-primary-dark);
+          border-color: var(--color-primary-dark);
+          transform: translateY(-2px);
+        }
+        
+        .auth-menu-btn.secondary {
+          background: transparent;
+          color: var(--color-primary);
+          border: 2px solid var(--color-primary);
+        }
+        
+        .auth-menu-btn.secondary:hover {
+          background: var(--color-primary);
+          color: white;
+          transform: translateY(-2px);
+        }
+        
         .upload-area-wrapper {
           margin-top: 40px;
           max-width: 600px;
@@ -621,19 +779,19 @@ function Home() {
             font-size: 1em;
           }
           
-          /* Botões de autenticação em mobile */
-          .auth-buttons {
-            margin-bottom: 80px !important; /* Espaço extra dos botões ao final */
-            padding-bottom: 40px !important;
+          /* Menu hamburger em mobile */
+          .auth-menu-toggle {
+            top: 10px;
+            left: 10px;
+            width: 45px;
+            height: 45px;
           }
           
-          .auth-buttons a {
-            display: block !important;
-            width: 100% !important;
-            max-width: 280px !important;
-            margin: 0 auto 15px auto !important;
-            text-align: center !important;
-            box-sizing: border-box !important;
+          .auth-menu {
+            top: 10px;
+            left: 65px;
+            width: calc(100vw - 85px);
+            max-width: 300px;
           }
           
           /* Welcome screen em mobile */
@@ -685,6 +843,48 @@ function Home() {
       <button className="theme-toggle" onClick={toggleTheme}>
         {isDarkMode ? '☀️' : '🌙'}
       </button>
+
+      {/* Menu Hamburger de Autenticação */}
+      {!isAuthenticated && (
+        <>
+          <button 
+            className="auth-menu-toggle" 
+            onClick={() => setAuthMenuOpen(!authMenuOpen)}
+          >
+            <div className="hamburger-lines">
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </button>
+
+          {authMenuOpen && (
+            <>
+              <div className="auth-menu-overlay" onClick={() => setAuthMenuOpen(false)}></div>
+              <div className="auth-menu">
+                <div className="auth-menu-header">
+                  <h3>🔐 Autenticação</h3>
+                  <button 
+                    className="auth-menu-close"
+                    onClick={() => setAuthMenuOpen(false)}
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="auth-menu-content">
+                  <p>Para começar a usar o Tecxto IA:</p>
+                  <a href="/login" className="auth-menu-btn primary">
+                    🔑 Fazer Login
+                  </a>
+                  <a href="/register" className="auth-menu-btn secondary">
+                    ✨ Criar Conta
+                  </a>
+                </div>
+              </div>
+            </>
+          )}
+        </>
+      )}
 
       <div className="app-container">
         {isAuthenticated && (
@@ -793,66 +993,6 @@ function Home() {
                 </div>
                 
                 {renderContent()}
-                
-                {!isAuthenticated && (
-                  <div style={{ 
-                    marginTop: '40px', 
-                    textAlign: 'center',
-                    padding: '20px',
-                    backgroundColor: 'var(--bg-input)',
-                    borderRadius: '12px',
-                    border: '1px solid var(--border-color)',
-                    marginBottom: '30px'
-                  }}>
-                    <p style={{ 
-                      color: 'var(--text-secondary)', 
-                      marginBottom: '20px',
-                      fontSize: '1rem'
-                    }}>
-                      Para começar a usar o Tecxto IA:
-                    </p>
-                    <div style={{
-                      display: 'flex',
-                      gap: '15px',
-                      justifyContent: 'center',
-                      flexWrap: 'wrap'
-                    }} className="auth-buttons">
-                      <a 
-                        href="/login" 
-                        style={{ 
-                          display: 'inline-block',
-                          padding: '12px 24px',
-                          backgroundColor: 'var(--color-primary)',
-                          color: 'white',
-                          textDecoration: 'none',
-                          fontWeight: 'bold',
-                          borderRadius: '8px',
-                          transition: 'all 0.3s ease',
-                          minWidth: '120px'
-                        }}
-                      >
-                        🔑 Fazer Login
-                      </a>
-                      <a 
-                        href="/register" 
-                        style={{ 
-                          display: 'inline-block',
-                          padding: '12px 24px',
-                          backgroundColor: 'transparent',
-                          color: 'var(--color-primary)',
-                          textDecoration: 'none',
-                          fontWeight: 'bold',
-                          border: '2px solid var(--color-primary)',
-                          borderRadius: '8px',
-                          transition: 'all 0.3s ease',
-                          minWidth: '120px'
-                        }}
-                      >
-                        ✨ Criar Conta
-                      </a>
-                    </div>
-                  </div>
-                )}
               </div>
             ) : (
               <div className="main-container">

@@ -503,6 +503,45 @@ def login():
     
     return jsonify({"error": message}), 401
 
+@app.route('/auth/verify-token', methods=['GET'])
+@require_auth
+def verify_token():
+    """Verifica se o token é válido e retorna dados do usuário"""
+    from flask_jwt_extended import get_jwt_identity
+    user_id = get_jwt_identity()
+    
+    # Buscar dados do usuário
+    conn = db.get_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+    SELECT username, email, is_admin FROM users WHERE id = ? AND is_active = 1
+    ''', (user_id,))
+    
+    result = cursor.fetchone()
+    conn.close()
+    
+    if not result:
+        return jsonify({"error": "Usuário não encontrado"}), 404
+    
+    username, email, is_admin = result
+    
+    # Verificar assinatura
+    has_subscription, end_date, usage_count = db.check_user_subscription(user_id)
+    
+    return jsonify({
+        "message": "Token válido",
+        "data": {
+            "user_id": user_id,
+            "username": username,
+            "email": email,
+            "is_admin": bool(is_admin),
+            "has_subscription": has_subscription,
+            "subscription_end": end_date.isoformat() if end_date else None,
+            "usage_count": usage_count
+        }
+    }), 200
+
 @app.route('/auth/redeem-code', methods=['POST'])
 @require_auth
 def redeem_payment_code():

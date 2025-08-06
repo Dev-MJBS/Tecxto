@@ -12,10 +12,10 @@ export const API_BASE_URL = isProduction ? API_CONFIG.production : API_CONFIG.de
 
 // URLs completas da API
 export const API_ENDPOINTS = {
-  // Auth
-  login: `${API_BASE_URL}/api/login`,
-  register: `${API_BASE_URL}/api/register`,
-  verifyToken: `${API_BASE_URL}/api/verify-token`,
+  // Auth - Corrigidas para corresponder às rotas do Flask
+  login: `${API_BASE_URL}/auth/login`,
+  register: `${API_BASE_URL}/auth/register`,
+  verifyToken: `${API_BASE_URL}/auth/verify-token`,
   
   // Upload e análise
   upload: `${API_BASE_URL}/api/upload`,

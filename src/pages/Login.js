@@ -1,0 +1,221 @@
+import React, { useState, useContext, useEffect } from 'react';
+import { AuthContext } from '../context/AuthContext';
+
+function Login() {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { login, isAuthenticated } = useContext(AuthContext);
+
+  // Redirecionar se já estiver logado
+  useEffect(() => {
+    if (isAuthenticated) {
+      window.location.href = '/';
+    }
+  }, [isAuthenticated]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const result = await login(formData.username, formData.password);
+      if (result.success) {
+        window.location.href = '/';
+      } else {
+        setError(result.message || 'Erro ao fazer login');
+      }
+    } catch (err) {
+      setError('Erro de conexão. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  return (
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '20px'
+    }}>
+      <div style={{
+        background: 'white',
+        padding: '40px',
+        borderRadius: '12px',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+        width: '100%',
+        maxWidth: '400px'
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+          <h1 style={{
+            color: '#27AE60',
+            fontSize: '2.5em',
+            margin: '0 0 10px 0',
+            fontFamily: 'Montserrat, sans-serif',
+            fontWeight: '700'
+          }}>
+            Tecxto IA
+          </h1>
+          <p style={{
+            color: '#666',
+            margin: 0,
+            fontSize: '1.1em'
+          }}>
+            Faça login para continuar
+          </p>
+        </div>
+
+        {error && (
+          <div style={{
+            background: '#ffebee',
+            color: '#c62828',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            border: '1px solid #ef5350'
+          }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{
+              display: 'block',
+              marginBottom: '8px',
+              color: '#333',
+              fontWeight: '500'
+            }}>
+              Usuário ou Email:
+            </label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              style={{
+                width: '100%',
+                padding: '12px',
+                border: '2px solid #e0e0e0',
+                borderRadius: '8px',
+                fontSize: '16px',
+                boxSizing: 'border-box',
+                transition: 'border-color 0.3s ease'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#27AE60'}
+              onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+            />
+          </div>
+
+          <div style={{ marginBottom: '25px' }}>
+            <label style={{
+              display: 'block',
+              marginBottom: '8px',
+              color: '#333',
+              fontWeight: '500'
+            }}>
+              Senha:
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              style={{
+                width: '100%',
+                padding: '12px',
+                border: '2px solid #e0e0e0',
+                borderRadius: '8px',
+                fontSize: '16px',
+                boxSizing: 'border-box',
+                transition: 'border-color 0.3s ease'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#27AE60'}
+              onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '14px',
+              background: loading ? '#ccc' : '#27AE60',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'background 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              if (!loading) e.target.style.background = '#1E8449';
+            }}
+            onMouseLeave={(e) => {
+              if (!loading) e.target.style.background = '#27AE60';
+            }}
+          >
+            {loading ? 'Fazendo login...' : 'Entrar'}
+          </button>
+        </form>
+
+        <div style={{
+          textAlign: 'center',
+          marginTop: '20px',
+          padding: '20px 0',
+          borderTop: '1px solid #e0e0e0'
+        }}>
+          <p style={{ color: '#666', margin: '0 0 10px 0' }}>
+            Não tem uma conta?
+          </p>
+          <a
+            href="/register"
+            style={{
+              color: '#27AE60',
+              textDecoration: 'none',
+              fontWeight: 'bold'
+            }}
+          >
+            Criar conta gratuita
+          </a>
+        </div>
+
+        <div style={{
+          textAlign: 'center',
+          marginTop: '15px'
+        }}>
+          <a
+            href="/"
+            style={{
+              color: '#666',
+              textDecoration: 'none',
+              fontSize: '14px'
+            }}
+          >
+            ← Voltar ao início
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Login;
