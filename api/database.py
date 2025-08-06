@@ -105,8 +105,9 @@ class Database:
             cursor.execute('UPDATE users SET is_admin = 1 WHERE email = ?', ('mateus.job@outlook.com',))
             conn.commit()
         else:
-            # Criar usuário administrador
-            password_hash = bcrypt.generate_password_hash('!Band9al7').decode('utf-8')
+            # Buscar senha do admin das variáveis de ambiente
+            admin_password = os.getenv('ADMIN_PASSWORD', 'admin123')  # Senha padrão temporária
+            password_hash = bcrypt.generate_password_hash(admin_password).decode('utf-8')
             cursor.execute('''
             INSERT INTO users (username, email, password_hash, is_admin, is_active)
             VALUES (?, ?, ?, 1, 1)
