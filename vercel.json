@@ -2,7 +2,10 @@
   "builds": [
     {
       "src": "api/index.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
     },
     {
       "src": "package.json",
@@ -26,12 +29,6 @@
       "dest": "/index.html"
     }
   ],
-  "functions": {
-    "api/index.py": {
-      "runtime": "python3.9",
-      "maxDuration": 30
-    }
-  },
   "env": {
     "PYTHONPATH": "./api"
   }
