@@ -10,13 +10,7 @@ function Dropzone({ theme }) {
   const { api, isAuthenticated, isLoading: authLoading } = useContext(AuthContext);
 
   const onDrop = async (acceptedFiles) => {
-    if (authLoading) return;
-    if (!isAuthenticated) {
-      setError('Faça login para analisar sua redação.');
-      setTimeout(() => navigate('/login'), 1200);
-      return;
-    }
-    
+    // Modo teste - sem verificação de autenticação
     const file = acceptedFiles[0];
     if (!file) return;
 
@@ -37,21 +31,22 @@ function Dropzone({ theme }) {
     }
 
     try {
-      const response = await api.post('/analyze', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        timeout: 120000,
+      // Fazer requisição direta à API sem token
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        body: formData,
       });
 
-      if (response.data.success) {
-        navigate('/resultado', {
+      const data = await response.json();
+
+      if (data.success) {
+        navigate('/result', {
           state: {
-            analysis: response.data.analysis,
-            extractedText: response.data.extracted_text,
-            fileType: response.data.file_type,
-            plagiarismCheck: response.data.plagiarism_check,
-            plagiarismDetails: response.data.plagiarism_details,
+            analysis: data.analysis,
+            extractedText: data.extracted_text,
+            fileType: data.file_type,
+            plagiarismCheck: data.plagiarism_check,
+            plagiarismDetails: data.plagiarism_details,
             theme: theme
           }
         });
@@ -60,13 +55,7 @@ function Dropzone({ theme }) {
       }
     } catch (error) {
       console.error('Erro:', error);
-      if (error.code === 'ECONNABORTED') {
-        setError('Tempo limite excedido. A análise está demorando mais que o esperado.');
-      } else if (error.response?.data?.error) {
-        setError(error.response.data.error);
-      } else {
-        setError('Erro ao conectar com o servidor. Verifique se a API está funcionando.');
-      }
+      setError('Erro ao conectar com o servidor. Verifique se a API está funcionando.');
     } finally {
       setIsLoading(false);
     }

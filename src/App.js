@@ -17,32 +17,32 @@ function App() {
       <Router>
         <div className="App">
           <Routes>
-            {/* Rotas públicas */}
+            {/* Rotas públicas - TODAS LIBERADAS TEMPORARIAMENTE */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             
-            {/* Rotas protegidas */}
+            {/* Rotas temporariamente sem proteção */}
             <Route path="/subscription" element={
-              <ProtectedRoute>
+              <>
                 <Navbar />
                 <SubscriptionPage />
-              </ProtectedRoute>
+              </>
             } />
             
             <Route path="/admin" element={
-              <ProtectedRoute>
+              <>
                 <Navbar />
                 <AdminPage />
-              </ProtectedRoute>
+              </>
             } />
             
             <Route path="/" element={<Home />} />
             
             <Route path="/result" element={
-              <ProtectedRoute requireSubscription={true}>
+              <>
                 <Navbar />
                 <ResultPage />
-              </ProtectedRoute>
+              </>
             } />
             
             {/* Redirecionamento padrão */}

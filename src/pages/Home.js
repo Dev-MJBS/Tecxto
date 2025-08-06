@@ -952,21 +952,14 @@ function Home() {
               <div className="welcome-screen">
                 <div className="logo">Tecxto IA 📝</div>
                 <div className="subtitle">
-                  {isAuthenticated 
-                    ? "Sua plataforma inteligente de correção de redações ENEM."
-                    : "Experimente nossa correção inteligente - Veja como funciona antes de comprar!"
-                  }
+                  "Experimente nossa correção inteligente - Sistema em modo teste!"
                 </div>
                 
                 <div className="suggestion-pills">
                   <div 
                     className="suggestion-pill"
                     onClick={() => {
-                      if (isAuthenticated) {
-                        setShowInstructions(false);
-                      } else {
-                        alert('Faça login para começar a análise');
-                      }
+                      setShowInstructions(false);
                     }}
                     style={{ backgroundColor: 'var(--color-primary)', color: 'white' }}
                   >

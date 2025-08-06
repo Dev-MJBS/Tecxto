@@ -504,70 +504,40 @@ def login():
     return jsonify({"error": message}), 401
 
 @app.route('/auth/verify-token', methods=['GET'])
-@require_auth
 def verify_token():
-    """Verifica se o token é válido e retorna dados do usuário"""
-    from flask_jwt_extended import get_jwt_identity
-    user_id = get_jwt_identity()
-    
-    # Buscar dados do usuário
-    conn = db.get_connection()
-    cursor = conn.cursor()
-    
-    cursor.execute('''
-    SELECT username, email, is_admin FROM users WHERE id = ? AND is_active = 1
-    ''', (user_id,))
-    
-    result = cursor.fetchone()
-    conn.close()
-    
-    if not result:
-        return jsonify({"error": "Usuário não encontrado"}), 404
-    
-    username, email, is_admin = result
-    
-    # Verificar assinatura
-    has_subscription, end_date, usage_count = db.check_user_subscription(user_id)
+    """Retorna dados de usuário fake para bypass temporário"""
+    # Dados fake para teste sem login
+    fake_user_data = {
+        'user_id': 999,
+        'username': 'teste_sem_login',
+        'email': 'teste@exemplo.com',
+        'is_admin': True,
+        'has_subscription': True,
+        'subscription_end': '2030-12-31',
+        'usage_count': 0
+    }
     
     return jsonify({
-        "message": "Token válido",
-        "data": {
-            "user_id": user_id,
-            "username": username,
-            "email": email,
-            "is_admin": bool(is_admin),
-            "has_subscription": has_subscription,
-            "subscription_end": end_date.isoformat() if end_date else None,
-            "usage_count": usage_count
-        }
+        "message": "Token válido (modo teste)",
+        "data": fake_user_data
     }), 200
 
 @app.route('/auth/redeem-code', methods=['POST'])
-@require_auth
 def redeem_payment_code():
-    from flask_jwt_extended import get_jwt_identity
-    user_id = get_jwt_identity()
-    
+    # Bypass temporário - sempre retorna sucesso
     data = request.get_json()
     if not data or not data.get('payment_code'):
         return jsonify({"error": "Código de pagamento é obrigatório"}), 400
     
-    success, message = db.use_payment_code(data['payment_code'], user_id)
-    
-    if success:
-        # Buscar nova informação da assinatura
-        has_subscription, end_date, usage_count = db.check_user_subscription(user_id)
-        
-        return jsonify({
-            "message": message,
-            "subscription": {
-                "active": has_subscription,
-                "end_date": end_date.isoformat() if end_date else None,
-                "usage_count": usage_count
-            }
-        }), 200
-    
-    return jsonify({"error": message}), 400
+    # Retorna resposta fake de sucesso
+    return jsonify({
+        "message": "Código resgatado com sucesso (modo teste)",
+        "subscription": {
+            "active": True,
+            "end_date": "2030-12-31",
+            "usage_count": 0
+        }
+    }), 200
 
 @app.route('/auth/subscription-status', methods=['GET'])
 @require_auth
@@ -628,7 +598,6 @@ def admin_activate_user():
     return jsonify({"error": message}), 400
 
 @app.route('/analyze', methods=['POST'])
-@require_subscription
 def analyze_essay_endpoint():
     if 'file' not in request.files:
         return jsonify({"error": "Nenhum arquivo foi enviado"}), 400
