@@ -516,6 +516,7 @@ function Home() {
           height: 100%;
           overflow-y: auto;
           padding: 20px;
+          padding-bottom: 100px; /* Adicionar espaço extra no final */
         }
         
         .home-container {
@@ -525,6 +526,7 @@ function Home() {
           border-radius: 12px;
           padding: 30px;
           box-shadow: 0 4px 20px var(--shadow-color);
+          margin-bottom: 50px; /* Espaço extra no final */
         }
         
         .instructions h2 {
@@ -583,6 +585,11 @@ function Home() {
             display: flex; 
           }
           
+          .main-container {
+            padding: 15px;
+            padding-bottom: 120px; /* Mais espaço em mobile */
+          }
+          
           .welcome-screen .logo {
             font-size: 2.2em;
           }
@@ -599,6 +606,7 @@ function Home() {
           .home-container {
             margin: 0 10px;
             padding: 20px;
+            margin-bottom: 40px;
           }
           
           .theme-toggle {
@@ -607,6 +615,21 @@ function Home() {
             padding: 8px;
             font-size: 1em;
           }
+        }
+        
+        /* Estilo para botões de login/registro */
+        .auth-buttons a:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+        
+        .auth-buttons a:first-child:hover {
+          background-color: var(--color-primary-dark);
+        }
+        
+        .auth-buttons a:last-child:hover {
+          background-color: var(--color-primary);
+          color: white;
         }
       `}</style>
 
@@ -723,28 +746,62 @@ function Home() {
                 {renderContent()}
                 
                 {!isAuthenticated && (
-                  <div style={{ marginTop: '30px', textAlign: 'center' }}>
-                    <a 
-                      href="/login" 
-                      style={{ 
-                        color: 'var(--color-primary)', 
-                        textDecoration: 'none',
-                        fontWeight: 'bold',
-                        marginRight: '20px'
-                      }}
-                    >
-                      Fazer Login
-                    </a>
-                    <a 
-                      href="/register" 
-                      style={{ 
-                        color: 'var(--color-primary)', 
-                        textDecoration: 'none',
-                        fontWeight: 'bold'
-                      }}
-                    >
-                      Criar Conta
-                    </a>
+                  <div style={{ 
+                    marginTop: '40px', 
+                    textAlign: 'center',
+                    padding: '20px',
+                    backgroundColor: 'var(--bg-input)',
+                    borderRadius: '12px',
+                    border: '1px solid var(--border-color)',
+                    marginBottom: '30px'
+                  }}>
+                    <p style={{ 
+                      color: 'var(--text-secondary)', 
+                      marginBottom: '20px',
+                      fontSize: '1rem'
+                    }}>
+                      Para começar a usar o Tecxto IA:
+                    </p>
+                    <div style={{
+                      display: 'flex',
+                      gap: '15px',
+                      justifyContent: 'center',
+                      flexWrap: 'wrap'
+                    }} className="auth-buttons">
+                      <a 
+                        href="/login" 
+                        style={{ 
+                          display: 'inline-block',
+                          padding: '12px 24px',
+                          backgroundColor: 'var(--color-primary)',
+                          color: 'white',
+                          textDecoration: 'none',
+                          fontWeight: 'bold',
+                          borderRadius: '8px',
+                          transition: 'all 0.3s ease',
+                          minWidth: '120px'
+                        }}
+                      >
+                        🔑 Fazer Login
+                      </a>
+                      <a 
+                        href="/register" 
+                        style={{ 
+                          display: 'inline-block',
+                          padding: '12px 24px',
+                          backgroundColor: 'transparent',
+                          color: 'var(--color-primary)',
+                          textDecoration: 'none',
+                          fontWeight: 'bold',
+                          border: '2px solid var(--color-primary)',
+                          borderRadius: '8px',
+                          transition: 'all 0.3s ease',
+                          minWidth: '120px'
+                        }}
+                      >
+                        ✨ Criar Conta
+                      </a>
+                    </div>
                   </div>
                 )}
               </div>
