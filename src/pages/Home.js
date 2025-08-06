@@ -187,21 +187,24 @@ function Home() {
           `}
         }
         
-        html { height: -webkit-fill-available; }
+        html { 
+          height: 100%; 
+          overflow-y: scroll; /* Força barra de scroll vertical */
+        }
         body {
-          height: 100vh;
-          height: 100dvh;
+          height: 100%;
           margin: 0;
-          overflow: hidden;
           font-family: 'Roboto', 'Montserrat', sans-serif;
           background-color: var(--bg-body);
           color: var(--text-primary);
           -webkit-text-size-adjust: 100%;
+          overflow-x: hidden; /* Apenas esconde scroll horizontal */
+          overflow-y: auto; /* Permite scroll vertical automático */
         }
         
         .app-container { 
           display: flex; 
-          height: 100%; 
+          min-height: 100vh; /* Altura mínima da viewport */
           width: 100%; 
           transition: background-color 0.3s; 
         }
@@ -216,6 +219,9 @@ function Home() {
           width: 260px;
           min-width: 220px;
           z-index: 1001;
+          height: 100vh; /* Altura fixa da viewport */
+          position: sticky;
+          top: 0;
         }
         
         .history-sidebar .header {
@@ -301,9 +307,8 @@ function Home() {
           flex-grow: 1;
           display: flex;
           flex-direction: column;
-          height: 100%;
+          min-height: 100vh; /* Altura mínima */
           position: relative;
-          overflow: hidden;
         }
         
         .main-header {
@@ -329,13 +334,11 @@ function Home() {
           display: flex; 
           flex-direction: column; 
           flex-grow: 1; 
-          height: 100%; 
-          overflow: hidden; 
+          min-height: calc(100vh - 50px); /* Altura mínima menos header se existir */
         }
         
         .welcome-screen, .chat-container { 
           flex-grow: 1; 
-          overflow-y: auto; 
           padding: 20px; 
           -webkit-overflow-scrolling: touch; 
         }
@@ -347,10 +350,12 @@ function Home() {
         .welcome-screen {
           display: flex;
           flex-direction: column;
-          justify-content: center;
+          justify-content: flex-start; /* Mudança: começa do topo */
           align-items: center;
           text-align: center;
-          height: 100%;
+          min-height: calc(100vh + 100px); /* Força scroll: altura maior que viewport */
+          padding-top: 60px; /* Espaçamento do topo */
+          padding-bottom: 300px; /* Espaço extra no final para garantir scroll e visibilidade dos botões */
         }
         
         .welcome-screen .logo {
@@ -513,10 +518,9 @@ function Home() {
           flex-grow: 1;
           display: flex;
           flex-direction: column;
-          height: 100%;
-          overflow-y: auto;
+          min-height: calc(100vh + 150px); /* Força altura maior que viewport */
           padding: 20px;
-          padding-bottom: 100px; /* Adicionar espaço extra no final */
+          padding-bottom: 150px; /* Muito espaço para os botões */
         }
         
         .home-container {
@@ -526,7 +530,7 @@ function Home() {
           border-radius: 12px;
           padding: 30px;
           box-shadow: 0 4px 20px var(--shadow-color);
-          margin-bottom: 50px; /* Espaço extra no final */
+          margin-bottom: 100px; /* Mais espaço no final */
         }
         
         .instructions h2 {
@@ -587,7 +591,8 @@ function Home() {
           
           .main-container {
             padding: 15px;
-            padding-bottom: 120px; /* Mais espaço em mobile */
+            padding-bottom: 300px; /* Ainda mais espaço em mobile */
+            min-height: calc(100vh + 300px); /* Força scroll em mobile */
           }
           
           .welcome-screen .logo {
@@ -615,6 +620,50 @@ function Home() {
             padding: 8px;
             font-size: 1em;
           }
+          
+          /* Botões de autenticação em mobile */
+          .auth-buttons {
+            margin-bottom: 80px !important; /* Espaço extra dos botões ao final */
+            padding-bottom: 40px !important;
+          }
+          
+          .auth-buttons a {
+            display: block !important;
+            width: 100% !important;
+            max-width: 280px !important;
+            margin: 0 auto 15px auto !important;
+            text-align: center !important;
+            box-sizing: border-box !important;
+          }
+          
+          /* Welcome screen em mobile */
+          .welcome-screen {
+            padding-bottom: 400px !important; /* Ainda mais espaço em mobile */
+            min-height: calc(100vh + 400px) !important;
+          }
+        }
+        
+        /* Força barra de scroll sempre visível */
+        ::-webkit-scrollbar {
+          width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+          background: var(--bg-input);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+          background: var(--border-color);
+          border-radius: 6px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+          background: var(--color-primary);
+        }
+        
+        /* Garante que sempre há conteúdo suficiente para scroll */
+        #root {
+          min-height: calc(100vh + 100px);
         }
         
         /* Estilo para botões de login/registro */
