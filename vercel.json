@@ -30,6 +30,13 @@
     }
   ],
   "env": {
-    "PYTHONPATH": "./api"
+    "PYTHONPATH": "./api",
+    "CI": "false"
+  },
+  "build": {
+    "env": {
+      "CI": "false",
+      "GENERATE_SOURCEMAP": "false"
+    }
   }
 }
