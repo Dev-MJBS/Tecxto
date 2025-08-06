@@ -5,7 +5,8 @@ const API_CONFIG = {
 };
 
 // Detecta se está em produção (Vercel) ou desenvolvimento
-const isProduction = process.env.NODE_ENV === 'production' || window.location.hostname !== 'localhost';
+const isProduction = process.env.NODE_ENV === 'production' || 
+  (typeof window !== 'undefined' && window.location.hostname !== 'localhost');
 
 export const API_BASE_URL = isProduction ? API_CONFIG.production : API_CONFIG.development;
 
@@ -40,5 +41,5 @@ export const API_ENDPOINTS = {
 console.log('API Configuration:', {
   isProduction,
   baseUrl: API_BASE_URL,
-  hostname: window.location.hostname
+  hostname: typeof window !== 'undefined' ? window.location.hostname : 'server-side'
 });
